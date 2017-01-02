@@ -6,11 +6,11 @@ private:
 	double health;
 public:
 	HealthPoints(double hp) : health(hp) { }
-	
+
 	double getHealth() {
 		return health;
 	}
-	
+
 	void setHealth(double hp) {
 		health = hp;
 	}
@@ -21,7 +21,7 @@ private:
 	const double age;
 public:
 	Age(double years) : age(years) { }
-	
+
 	double getAge() {
 		return age;
 	}
@@ -32,7 +32,7 @@ private:
 	const double damage;
 public:
 	AttackPower(double attack) : damage(attack) { }
-	
+
 	double getAttackPower() {
 		return damage;
 	}
