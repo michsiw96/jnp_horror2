@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
+#include "helper.h"
 
 class Monster {
 protected:
