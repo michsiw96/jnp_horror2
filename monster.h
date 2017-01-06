@@ -5,13 +5,23 @@
 #include <memory>
 #include "helper.h"
 
-class Monster {
+class Monster : public Unit {
 public:
 	virtual HealthPoints getHealth() const  = 0;
 
 	virtual AttackPower getAttackPower() const = 0;
 
 	virtual void takeDamage(AttackPower damage) = 0;
+
+	virtual std::string const& getName() const = 0;
+
+	void attack(std::shared_ptr<Unit> unit) {
+		unit->attackedBy(this, getAttackPower());
+	}
+
+	void attackedBy(Unit* unit, AttackPower damage) override {
+		takeDamage(damage);
+	}
 };
 
 class ConcreteMonster : public Monster {
@@ -39,18 +49,33 @@ class Zombie : public ConcreteMonster {
 public:
 	Zombie(HealthPoints health, AttackPower attackPower)
 		: ConcreteMonster(health, attackPower) { }
+
+	std::string const& getName() const override {
+		static std::string name = "Zombie";
+		return name;
+	}
 };
 
 class Vampire : public ConcreteMonster {
 public:
 	Vampire(HealthPoints health, AttackPower attackPower)
 		: ConcreteMonster(health, attackPower) { }
+
+	std::string const& getName() const override {
+		static std::string name = "Vampire";
+		return name;
+	}
 };
 
 class Mummy : public ConcreteMonster {
 public:
 	Mummy(HealthPoints health, AttackPower attackPower)
 		: ConcreteMonster(health, attackPower) { }
+
+	std::string const& getName() const override {
+		static std::string name = "Mummy";
+		return name;
+	}
 };
 
 class GroupOfMonsters : public Monster {
@@ -83,6 +108,11 @@ public:
 		for (auto& x : monsters) {
 			x->takeDamage(damage);
 		}
+	}
+
+	std::string const& getName() const override {
+		static std::string name = "GroupOfMonsters";
+		return name;
 	}
 };
 

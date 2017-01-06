@@ -19,7 +19,7 @@ public:
 		: _monster(monster), _citizens(citizens) { }
 
 	size_t getAliveCitizens() const { return _citizens.size(); }
-	std::string const& getMonsterName() const { static std::string nyi("NYI"); return nyi; /*_monster->getName();*/ }
+	std::string const& getMonsterName() const { return _monster->getName(); }
 	HealthPoints getMonsterHealth() const { return _monster->getHealth(); }
 };
 
@@ -31,7 +31,7 @@ public:
 class DivisibleAttackTimeStrategy : public AttackTimeStrategy {
 public:
 	bool isAttackTime(Time time) const override {
-		return time % 3 == 0 && time % 13 == 0 && time % 7 != 0;
+		return (time % 3 == 0 || time % 13 == 0) && time % 7 != 0;
 	}
 };
 
@@ -64,7 +64,12 @@ protected:
 	}
 
 	void attackAll() {
+		for (auto& citizen : _citizens) {
+			if (citizen->getHealth() > 0)
+				_monster->attack(citizen);
+		}
 	}
+
 
 public:
 

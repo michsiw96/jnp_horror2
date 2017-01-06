@@ -6,7 +6,7 @@
 #include <memory>
 #include "helper.h"
 
-class Citizen {
+class Citizen : public Unit {
 protected:
 	HealthPoints health;
 	Age age;
@@ -23,6 +23,10 @@ public:
 
 	void takeDamage(AttackPower damage) {
 		health = std::max(health - damage, 0.0f);
+	}
+
+	virtual void attackedBy(Unit* unit, AttackPower damage) override {
+		takeDamage(damage);
 	}
 
 protected:
@@ -52,8 +56,13 @@ public:
 		assert(attackPower > 0);
 	}
 
-	AttackPower getAttackPower() {
+	AttackPower getAttackPower() const {
 		return damage;
+	}
+
+	void attackedBy(Unit* unit, AttackPower damage) override {
+		Citizen::attackedBy(unit, damage);
+		unit->attackedBy(this, getAttackPower());
 	}
 };
 
