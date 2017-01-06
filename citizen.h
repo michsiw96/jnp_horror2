@@ -13,23 +13,23 @@ protected:
 
 public:
 
-	HealthPoints getHealth() {
+	HealthPoints getHealth() const {
 		return health;
 	}
 
-	Age getAge() {
+	Age getAge() const {
 		return age;
 	}
 
 	void takeDamage(AttackPower damage) {
-		health.setHealth(std::max(health.getHealth() - damage.getAttackPower(), 0.0));
+		health = std::max(health - damage, 0.0f);
 	}
 
 protected:
 	Citizen(HealthPoints health, Age age, double minAge, double maxAge)
 		 : health(health), age(age)  {
-		assert(age.getAge() >= minAge && age.getAge() <= maxAge);
-		assert(health.getHealth() > 0);
+		assert(age >= minAge && age <= maxAge);
+		assert(health > 0);
 	}
 };
 
@@ -49,7 +49,7 @@ protected:
 public:
 	Sheriff(HealthPoints health, Age age, AttackPower attackPower)
 		: Citizen(health, age, 18, 100), damage(attackPower) {
-		assert(attackPower.getAttackPower() > 0);
+		assert(attackPower > 0);
 	}
 
 	AttackPower getAttackPower() {

@@ -20,7 +20,7 @@ public:
 
 	size_t getAliveCitizens() const { return _citizens.size(); }
 	std::string const& getMonsterName() const { static std::string nyi("NYI"); return nyi; /*_monster->getName();*/ }
-	/*HealthPoints*/ double getMonsterHealth() const { return _monster->getHealth().getHealth(); }
+	HealthPoints getMonsterHealth() const { return _monster->getHealth(); }
 };
 
 class AttackTimeStrategy {
@@ -50,7 +50,7 @@ protected:
 	static constexpr const char* MSG_DRAW = "DRAW";
 
 	bool isMonsterAlive() const {
-		return _monster->getHealth().getHealth() > 0;
+		return _monster->getHealth() > 0;
 	}
 
 	void computeResults() const {

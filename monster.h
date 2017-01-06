@@ -10,67 +10,70 @@ class Monster {
 protected:
 	HealthPoints health;
 	AttackPower damage;
+	Monster() { }
+
 public:
 	Monster(HealthPoints health, AttackPower attackPower)
 	: health(health), damage(attackPower) { }
-	
-	HealthPoints getHealth() {
+
+	virtual HealthPoints getHealth() const {
 		return health;
 	}
-	
-	AttackPower getAttackPower() {
+
+	virtual AttackPower getAttackPower() const  {
 		return damage;
 	}
-	
-	void takeDamage(AttackPower damage) {
-		health.setHealth(std::max(health.getHealth() - damage.getAttackPower(), static_cast<double>(0)));
+
+	virtual void takeDamage(AttackPower damage) {
+		health = std::max(health - damage, .0f);
 	}
 };
 
 class Zombie : public Monster {
 public:
-	Zombie(HealthPoints health, AttackPower attackPower) 
+	Zombie(HealthPoints health, AttackPower attackPower)
 		: Monster(health, attackPower) { }
 };
 
 class Vampire : public Monster {
 public:
-	Vampire(HealthPoints health, AttackPower attackPower) 
+	Vampire(HealthPoints health, AttackPower attackPower)
 		: Monster(health, attackPower) { }
 };
 
 class Mummy : public Monster {
 public:
-	Mummy(HealthPoints health, AttackPower attackPower) 
+	Mummy(HealthPoints health, AttackPower attackPower)
 		: Monster(health, attackPower) { }
 };
 
-class GroupOfMonsters {
-public:
+class GroupOfMonsters : public Monster {
+private:
 	std::vector<Monster> monsters;
-	
-	GroupOfMonsters(const std::vector<Monster> &monsters) : monsters(monsters) { }
-	
-	HealthPoints getHealth() {
+
+public:
+	GroupOfMonsters(const std::vector<Monster>& monsters) : monsters(monsters) { }
+
+	virtual HealthPoints getHealth() const override {
 		int sum = 0;
 		for (Monster x : monsters) {
-			sum += x.getHealth().getHealth();
+			sum += x.getHealth();
 		}
-		
+
 		return sum;
 	}
-	
-	AttackPower getAttackPower() {
+
+	virtual AttackPower getAttackPower() const override {
 		int sum = 0;
-		for (Monster x : monsters) {
-			sum += x.getAttackPower().getAttackPower();
+		for (Monster const& x : monsters) {
+			sum += x.getAttackPower();
 		}
-		
+
 		return sum;
 	}
-	
-	void takeDamage(AttackPower damage) {
-		for (Monster x : monsters) {
+
+	virtual void takeDamage(AttackPower damage) override {
+		for (Monster& x : monsters) {
 			x.takeDamage(damage);
 		}
 	}
