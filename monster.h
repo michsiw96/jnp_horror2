@@ -2,81 +2,104 @@
 #define MONSTER_H
 
 #include <vector>
-#include <functional>
-#include <algorithm>
+#include <memory>
 #include "helper.h"
 
 class Monster {
+public:
+	virtual HealthPoints getHealth() const  = 0;
+
+	virtual AttackPower getAttackPower() const = 0;
+
+	virtual void takeDamage(AttackPower damage) = 0;
+};
+
+class ConcreteMonster : public Monster {
 protected:
 	HealthPoints health;
 	AttackPower damage;
-	Monster() { }
-
 public:
-	Monster(HealthPoints health, AttackPower attackPower)
-	: health(health), damage(attackPower) { }
+	ConcreteMonster(HealthPoints health, AttackPower attackPower)
+		: health(health), damage(attackPower) { }
 
-	virtual HealthPoints getHealth() const {
+	HealthPoints getHealth() const override {
 		return health;
 	}
 
-	virtual AttackPower getAttackPower() const  {
+	AttackPower getAttackPower() const override {
 		return damage;
 	}
 
-	virtual void takeDamage(AttackPower damage) {
+	void takeDamage(AttackPower damage) override{
 		health = std::max(health - damage, .0f);
 	}
 };
 
-class Zombie : public Monster {
+class Zombie : public ConcreteMonster {
 public:
 	Zombie(HealthPoints health, AttackPower attackPower)
-		: Monster(health, attackPower) { }
+		: ConcreteMonster(health, attackPower) { }
 };
 
-class Vampire : public Monster {
+class Vampire : public ConcreteMonster {
 public:
 	Vampire(HealthPoints health, AttackPower attackPower)
-		: Monster(health, attackPower) { }
+		: ConcreteMonster(health, attackPower) { }
 };
 
-class Mummy : public Monster {
+class Mummy : public ConcreteMonster {
 public:
 	Mummy(HealthPoints health, AttackPower attackPower)
-		: Monster(health, attackPower) { }
+		: ConcreteMonster(health, attackPower) { }
 };
 
 class GroupOfMonsters : public Monster {
 private:
-	std::vector<Monster> monsters;
+	std::vector<std::shared_ptr<Monster> > monsters;
 
 public:
-	GroupOfMonsters(const std::vector<Monster>& monsters) : monsters(monsters) { }
+	GroupOfMonsters(std::vector<std::shared_ptr<Monster> > const& _monsters) : monsters(_monsters) { }
+	GroupOfMonsters(std::initializer_list<std::shared_ptr<Monster> > _monsters) : monsters(_monsters) { }
 
-	virtual HealthPoints getHealth() const override {
+	HealthPoints getHealth() const override {
 		int sum = 0;
-		for (Monster x : monsters) {
-			sum += x.getHealth();
+		for (auto const& x : monsters) {
+			sum += x->getHealth();
 		}
 
 		return sum;
 	}
 
-	virtual AttackPower getAttackPower() const override {
+	AttackPower getAttackPower() const override {
 		int sum = 0;
-		for (Monster const& x : monsters) {
-			sum += x.getAttackPower();
+		for (auto const& x : monsters) {
+			sum += x->getAttackPower();
 		}
 
 		return sum;
 	}
 
-	virtual void takeDamage(AttackPower damage) override {
-		for (Monster& x : monsters) {
-			x.takeDamage(damage);
+	void takeDamage(AttackPower damage) override {
+		for (auto& x : monsters) {
+			x->takeDamage(damage);
 		}
 	}
 };
+
+std::shared_ptr<Monster> createGroupOfMonsters(std::initializer_list<std::shared_ptr<Monster> > _monsters) {
+	return std::make_shared<GroupOfMonsters>(_monsters);
+}
+
+std::shared_ptr<Monster> createMummy(int health, int attackPower) {
+	return std::make_shared<Mummy>(health, attackPower);
+}
+
+std::shared_ptr<Monster> createZombie(int health, int attackPower) {
+	return std::make_shared<Zombie>(health, attackPower);
+}
+
+std::shared_ptr<Monster> createVampire(int health, int attackPower) {
+	return std::make_shared<Vampire>(health, attackPower);
+}
 
 #endif /* MONSTER_H */

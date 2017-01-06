@@ -11,13 +11,13 @@
 #include "smalltown.h"
 
 int main(int argc, const char * argv[]) {
-//    auto groupOfMonsters = createGroupOfMonsters({
-//        createMummy(90, 1),
-//        createZombie(20, 1),
-//        createVampire(30, 1)
-//    });
+    auto groupOfMonsters = createGroupOfMonsters({
+        createMummy(90, 1),
+        createZombie(20, 1),
+        createVampire(30, 1)
+    });
     auto smallTown = SmallTown::Builder()
-//        .monster(groupOfMonsters)
+        .monster(groupOfMonsters)
         .startTime(3)
         .maxTime(27)
         .citizen(createSheriff(100, 35, 20))
