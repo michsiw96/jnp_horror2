@@ -1,49 +1,61 @@
-#include <iostream>
 #include "citizen.h"
+#include "monster.h"
+#include "smalltown.h"
+#include <iostream>
 
-using namespace std;
-
-int main() {
-	Citizen greg = Adult(100, 20);
-	Citizen bobby = Teenager(100, 16);
-	Sheriff carlos = Sheriff(100, 42, 20);
+int main(int argc, const char * argv[]) {
+	auto groupOfMonsters = createGroupOfMonsters({
+		createMummy(90, 20),
+		createZombie(20, 20),
+		createVampire(30, 20)
+	});
 	
-	cout << "Greg taking damage:" << endl;
-	cout << greg.getHealth().getHealth() << endl;
-	greg.takeDamage(AttackPower(30));
-	cout << greg.getHealth().getHealth() << endl;
-	assert(greg.getHealth().getHealth() == 70);
+	auto greg = createSheriff(100, 35, 20);
+	auto anna = createAdult(100, 21);
+	auto bobby = createTeenager(50, 14);
 	
-	cout << "Bobby taking damage:" << endl;
-	cout << bobby.getHealth().getHealth() << endl;
-	bobby.takeDamage(AttackPower(20));
-	cout << bobby.getHealth().getHealth() << endl;
-	assert(bobby.getHealth().getHealth() == 80);
+	auto smallTown = SmallTown::Builder()
+	.monster(groupOfMonsters)
+	.monster(groupOfMonsters)
+	.startTime(2)
+	.startTime(3)
+	.maxTime(26)
+	.maxTime(27)
+	.citizen(greg)
+	.citizen(anna)
+	.citizen(anna)
+	.citizen(bobby)
+	.build();
 	
-	cout << "Carlos taking damage:" << endl;
-	cout << carlos.getHealth().getHealth() << endl;
-	carlos.takeDamage(AttackPower(40));
-	cout << carlos.getHealth().getHealth() << endl << endl;
-	assert(carlos.getHealth().getHealth() == 60);
+	smallTown.tick(18);
+	smallTown.tick(3);
 	
-	cout << "Greg data:" << endl;
-	cout << greg.getHealth().getHealth() << " ";
-	cout << greg.getAge().getAge() << endl << endl;
+	auto status = smallTown.getStatus();
+	assert(status.getMonsterName() == "GroupOfMonsters");
+	assert(status.getMonsterHealth() == 80);
+	assert(status.getAliveCitizens() == 3);
 	
-	cout << "Bobby data:" << endl;
-	cout << bobby.getHealth().getHealth() << " ";
-	cout << bobby.getAge().getAge() << endl << endl;
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
+	smallTown.tick(3);
 	
-	cout << "Greg data:" << endl;
-	cout << carlos.getHealth().getHealth() << " ";
-	cout << carlos.getAge().getAge() << " ";
-	cout << carlos.getAttackPower().getAttackPower() << endl << endl;
+	status = smallTown.getStatus();
+	std::cout << status.getMonsterHealth() << " " << status.getAliveCitizens() << std::endl;
 	
-	// shouldn't run without assertion fail
-// 	Citizen margaret = Adult(100, 15);
-// 	Citizen martha = Adult(100, 104);
-// 	Citizen susan = Teenager(100, 20);
-// 	Citizen marley = Sheriff(-3, 20, 20);
-// 	Citizen mike = Sheriff(100, 20, -3);
 	
+	return 0;
 }
