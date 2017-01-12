@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <cassert>
 #include "helper.h"
 
 class Monster : public Unit {
@@ -84,8 +85,10 @@ private:
 	std::vector<std::shared_ptr<Monster> > _monsters;
 
 public:
-	GroupOfMonsters(std::vector<std::shared_ptr<Monster> > const& monsters) : _monsters(monsters) { }
-	GroupOfMonsters(std::initializer_list<std::shared_ptr<Monster> > monsters) : _monsters(monsters) { }
+	GroupOfMonsters(std::vector<std::shared_ptr<Monster> > const& monsters) 
+		: _monsters(monsters) { }
+	GroupOfMonsters(std::initializer_list<std::shared_ptr<Monster> > monsters) 
+		: _monsters(monsters) { }
 
 	HealthPoints getHealth() const override {
 		int sum = 0;
@@ -119,7 +122,9 @@ public:
 	}
 };
 
-std::shared_ptr<Monster> createGroupOfMonsters(std::initializer_list<std::shared_ptr<Monster> > _monsters) {
+std::shared_ptr<Monster> createGroupOfMonsters(
+	std::initializer_list<std::shared_ptr<Monster> > _monsters) {
+	
 	return std::make_shared<GroupOfMonsters>(_monsters);
 }
 
