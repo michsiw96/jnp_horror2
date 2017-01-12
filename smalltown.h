@@ -12,16 +12,20 @@ using Time = int;
 
 class Status {
 private:
-	std::shared_ptr<Monster> _monster;
-	std::vector<std::shared_ptr<Citizen> >& _citizens;
+	std::string _name;
+	HealthPoints _monsterHealth;
+	size_t _aliveCitizens;
 
 public:
-	Status(std::shared_ptr<Monster> monster, std::vector<std::shared_ptr<Citizen> >& citizens)
-		: _monster(monster), _citizens(citizens) { }
+	Status(std::shared_ptr<Monster> monster, size_t aliveCitizens)
+		: _aliveCitizens(aliveCitizens) {
+		_name = monster->getName();
+		_monsterHealth = monster->getHealth();	
+	}
 
-	size_t getAliveCitizens() const { return _citizens.size(); }
-	std::string const& getMonsterName() const { return _monster->getName(); }
-	HealthPoints getMonsterHealth() const { return _monster->getHealth(); }
+	size_t getAliveCitizens() const { return _aliveCitizens; }
+	std::string const& getMonsterName() const { return _name; }
+	HealthPoints getMonsterHealth() const { return _monsterHealth; }
 };
 
 class AttackTimeStrategy {
@@ -42,9 +46,8 @@ protected:
 	Time _end;
 	std::shared_ptr<Monster> _monster;
 	std::vector<std::shared_ptr<Citizen> > _citizens;
+	size_t _aliveCitizens;
 	std::unique_ptr<AttackTimeStrategy> _attackTimeStrategy;
-
-	Status status;
 
 	static constexpr const char* MSG_CITIZENS_WON = "CITIZENS WON";
 	static constexpr const char* MSG_MONSTER_WON = "MONSTER WON";
@@ -64,10 +67,20 @@ protected:
 			std::cout << MSG_MONSTER_WON << "\n";
 	}
 
+	void attackCitizen(Citizen* citizen) {
+		if (citizen->getHealth() > 0) {
+			_monster->attack(citizen);
+			
+			if (citizen->getHealth() == 0) // if citizen died, decrease counter
+				--_aliveCitizens;
+		}
+	}
+
 	void attackAll() {
 		for (auto& citizen : _citizens) {
-			if (citizen->getHealth() > 0)
-				_monster->attack(citizen);
+			if (_monster->getHealth() == 0)
+				return;
+			attackCitizen(citizen.get());
 		}
 	}
 
@@ -75,12 +88,13 @@ protected:
 public:
 
 	SmallTown(Time start, Time end, std::vector<std::shared_ptr<Citizen> > const& citizens, std::shared_ptr<Monster> const& monster)
-		: _time(start), _end(end), _monster(monster), _citizens(citizens), status(monster, _citizens) {
+		: _time(start), _end(end), _monster(monster), _citizens(citizens) {
 		_attackTimeStrategy = std::make_unique<DivisibleAttackTimeStrategy>();
+		_aliveCitizens = citizens.size();
 	}
 
-	Status const& getStatus() const {
-		return status;
+	Status getStatus() const {
+		return Status(_monster, _aliveCitizens);
 	}
 
 	void tick(Time timeStep) {

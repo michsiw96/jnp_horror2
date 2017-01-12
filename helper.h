@@ -9,6 +9,7 @@ using AttackPower = float;
 class Unit {
 public:
 	virtual void attackedBy(Unit* unit, AttackPower attackPower) = 0;
+	virtual HealthPoints getHealth() const  = 0;
 };
 
 

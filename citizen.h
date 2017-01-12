@@ -13,7 +13,7 @@ protected:
 
 public:
 
-	HealthPoints getHealth() const {
+	HealthPoints getHealth() const override {
 		return _health;
 	}
 

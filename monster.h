@@ -7,15 +7,13 @@
 
 class Monster : public Unit {
 public:
-	virtual HealthPoints getHealth() const  = 0;
-
 	virtual AttackPower getAttackPower() const = 0;
 
 	virtual void takeDamage(AttackPower damage) = 0;
 	
 	virtual std::string const& getName() const = 0;
 
-	void attack(std::shared_ptr<Unit> unit) {
+	void attack(Unit* unit) {
 		unit->attackedBy(this, getAttackPower());
 	}
 
@@ -30,7 +28,10 @@ protected:
 	AttackPower _damage;
 public:
 	ConcreteMonster(HealthPoints health, AttackPower attackPower)
-		: _health(health), _damage(attackPower) { }
+		: _health(health), _damage(attackPower) {
+		assert(health > 0);
+		assert(attackPower > 0);
+	}
 
 	HealthPoints getHealth() const override {
 		return _health;
