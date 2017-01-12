@@ -59,11 +59,11 @@ protected:
 
 	void computeResults() const {
 		if (!isMonsterAlive()) {
-			if (_citizens.size() > 0)
+			if (_aliveCitizens > 0)
 				std::cout << MSG_CITIZENS_WON << "\n";
 			else
 				std::cout << MSG_DRAW << "\n";
-		} else if (_citizens.size() == 0)
+		} else if (_aliveCitizens == 0)
 			std::cout << MSG_MONSTER_WON << "\n";
 	}
 
