@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <set>
 #include "citizen.h"
 #include "monster.h"
 
@@ -98,6 +99,8 @@ public:
 		Time _maxTime;
 		std::shared_ptr<Monster> _monster;
 		std::vector<std::shared_ptr<Citizen> > _citizens;
+		
+		std::set<std::shared_ptr<Citizen> > _wasAlready;
 
 		enum INITIALIZED_FLAGS {
 			INITIALIZED_START_TIME = 0x1,
@@ -123,8 +126,13 @@ public:
 		}
 
 		Builder& citizen(std::shared_ptr<Citizen> const& citizen) {
-			_citizens.push_back(citizen);
-			_initializedFlags |= INITIALIZED_CITIZENS;
+			if (_wasAlready.find(citizen) == _wasAlready.end()) {
+				_wasAlready.insert(citizen);
+				_citizens.push_back(citizen);
+			
+				_initializedFlags |= INITIALIZED_CITIZENS;	
+			}
+			
 			return *this;
 		}
 

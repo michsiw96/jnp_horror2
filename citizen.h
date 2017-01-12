@@ -8,21 +8,21 @@
 
 class Citizen : public Unit {
 protected:
-	HealthPoints health;
-	Age age;
+	HealthPoints _health;
+	Age _age;
 
 public:
 
 	HealthPoints getHealth() const {
-		return health;
+		return _health;
 	}
 
 	Age getAge() const {
-		return age;
+		return _age;
 	}
 
 	void takeDamage(AttackPower damage) {
-		health = std::max(health - damage, 0.0f);
+		_health = std::max(_health - damage, 0.0f);
 	}
 
 	virtual void attackedBy(Unit* unit, AttackPower damage) override {
@@ -31,7 +31,7 @@ public:
 
 protected:
 	Citizen(HealthPoints health, Age age, double minAge, double maxAge)
-		 : health(health), age(age)  {
+		 : _health(health), _age(age)  {
 		assert(age >= minAge && age <= maxAge);
 		assert(health > 0);
 	}
@@ -49,15 +49,15 @@ public:
 
 class Sheriff : public Citizen {
 protected:
-	AttackPower damage;
+	AttackPower _damage;
 public:
 	Sheriff(HealthPoints health, Age age, AttackPower attackPower)
-		: Citizen(health, age, 18, 100), damage(attackPower) {
+		: Citizen(health, age, 18, 100), _damage(attackPower) {
 		assert(attackPower > 0);
 	}
 
 	AttackPower getAttackPower() const {
-		return damage;
+		return _damage;
 	}
 
 	void attackedBy(Unit* unit, AttackPower damage) override {

@@ -12,7 +12,7 @@ public:
 	virtual AttackPower getAttackPower() const = 0;
 
 	virtual void takeDamage(AttackPower damage) = 0;
-
+	
 	virtual std::string const& getName() const = 0;
 
 	void attack(std::shared_ptr<Unit> unit) {
@@ -26,22 +26,22 @@ public:
 
 class ConcreteMonster : public Monster {
 protected:
-	HealthPoints health;
-	AttackPower damage;
+	HealthPoints _health;
+	AttackPower _damage;
 public:
 	ConcreteMonster(HealthPoints health, AttackPower attackPower)
-		: health(health), damage(attackPower) { }
+		: _health(health), _damage(attackPower) { }
 
 	HealthPoints getHealth() const override {
-		return health;
+		return _health;
 	}
 
 	AttackPower getAttackPower() const override {
-		return damage;
+		return _damage;
 	}
 
 	void takeDamage(AttackPower damage) override{
-		health = std::max(health - damage, .0f);
+		_health = std::max(_health - damage, 0.0f);
 	}
 };
 
@@ -80,15 +80,15 @@ public:
 
 class GroupOfMonsters : public Monster {
 private:
-	std::vector<std::shared_ptr<Monster> > monsters;
+	std::vector<std::shared_ptr<Monster> > _monsters;
 
 public:
-	GroupOfMonsters(std::vector<std::shared_ptr<Monster> > const& _monsters) : monsters(_monsters) { }
-	GroupOfMonsters(std::initializer_list<std::shared_ptr<Monster> > _monsters) : monsters(_monsters) { }
+	GroupOfMonsters(std::vector<std::shared_ptr<Monster> > const& monsters) : _monsters(monsters) { }
+	GroupOfMonsters(std::initializer_list<std::shared_ptr<Monster> > monsters) : _monsters(monsters) { }
 
 	HealthPoints getHealth() const override {
 		int sum = 0;
-		for (auto const& x : monsters) {
+		for (auto const& x : _monsters) {
 			sum += x->getHealth();
 		}
 
@@ -97,16 +97,18 @@ public:
 
 	AttackPower getAttackPower() const override {
 		int sum = 0;
-		for (auto const& x : monsters) {
-			sum += x->getAttackPower();
+		for (auto const& x : _monsters) {
+			if (x->getHealth() > 0)
+				sum += x->getAttackPower();
 		}
 
 		return sum;
 	}
 
 	void takeDamage(AttackPower damage) override {
-		for (auto& x : monsters) {
-			x->takeDamage(damage);
+		for (auto& x : _monsters) {
+			if (x->getHealth() > 0)
+				x->takeDamage(damage);
 		}
 	}
 
