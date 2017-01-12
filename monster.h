@@ -128,6 +128,12 @@ std::shared_ptr<Monster> createGroupOfMonsters(
 	return std::make_shared<GroupOfMonsters>(_monsters);
 }
 
+std::shared_ptr<Monster> createGroupOfMonsters(
+	std::vector<std::shared_ptr<Monster> > _monsters) {
+	
+	return std::make_shared<GroupOfMonsters>(_monsters);
+	}
+
 std::shared_ptr<Monster> createMummy(int health, int attackPower) {
 	return std::make_shared<Mummy>(health, attackPower);
 }
