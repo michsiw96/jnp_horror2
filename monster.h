@@ -91,7 +91,7 @@ public:
 		: _monsters(monsters) { }
 
 	HealthPoints getHealth() const override {
-		int sum = 0;
+		HealthPoints sum = 0;
 		for (auto const& x : _monsters) {
 			sum += x->getHealth();
 		}
@@ -100,7 +100,7 @@ public:
 	}
 
 	AttackPower getAttackPower() const override {
-		int sum = 0;
+		AttackPower sum = 0;
 		for (auto const& x : _monsters) {
 			if (x->getHealth() > 0)
 				sum += x->getAttackPower();
